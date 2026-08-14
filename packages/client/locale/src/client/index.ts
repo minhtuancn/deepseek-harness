@@ -317,7 +317,7 @@ export class LocaleRuntime {
  * Host preference may replace this provisional value after plugin activation.
  */
 function resolveInitialLocale(): LocaleId {
-  return detectBrowserLocale() ?? FALLBACK_LOCALE
+  return detectBrowserLocale() ?? 'en'
 }
 
 /**

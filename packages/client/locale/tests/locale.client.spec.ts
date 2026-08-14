@@ -206,10 +206,10 @@ describe('LocaleRuntime', () => {
     expect(make().svc.getLocale().active).toBe('en')
     vi.stubGlobal('navigator', { language: 'en-US' })
     expect(make().svc.getLocale().active).toBe('en')
-    // No shipped language anywhere in the browser's preferences: zh remains
+    // No shipped language anywhere in the browser's preferences: en remains
     // the product default rather than an arbitrary near-match.
     stubLanguages('fr-FR', 'de')
-    expect(make().svc.getLocale().active).toBe('zh')
+    expect(make().svc.getLocale().active).toBe('en')
   })
 
   it('runs outside a browser (node boots): the fallback decides and the machine language does not', () => {
@@ -218,7 +218,7 @@ describe('LocaleRuntime', () => {
     // reach the resolution at all.
     stubLanguages('en-US')
     const { svc } = make()
-    expect(svc.getLocale().active).toBe('zh')
+    expect(svc.getLocale().active).toBe('en')
     svc.setLocale('en')
     expect(svc.getLocale().active).toBe('en')
   })
