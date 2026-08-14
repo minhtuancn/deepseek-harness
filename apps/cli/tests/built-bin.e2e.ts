@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -339,14 +340,37 @@ describe.skipIf(!existsSync(dshBin))('dsh BUILT bin (node lib/bin.js, no tsx)', 
       expect(web.stdout).toContain('--port <port>')
       expect(web.stdout).not.toContain('dsh web: http://')
 
-      const wildcardHost = await runBuiltBin(['web', '--host', '0.0.0.0'], {
-        DSH_HOME: home,
-        DSH_TELEMETRY_DISABLED: '1',
+      // `--host 0.0.0.0` now boots the server on all interfaces. The URL line
+      // always prints the loopback address (see web-app localWebUrl), so assert
+      // the server settled and then dispose it like the real Web smoke does.
+      const wildcardChild = spawn(process.execPath, [
+        dshBin, 'web', '--host', '0.0.0.0', '--port', '0',
+      ], {
+        cwd: home,
+        env: { ...process.env, DSH_HOME: home, DSH_TELEMETRY_DISABLED: '1' },
+        stdio: ['ignore', 'pipe', 'pipe'],
       })
-      expect(wildcardHost.code).toBe(1)
-      expect(wildcardHost.stdout).toBe('')
-      expect(wildcardHost.stderr).toContain('--host 0.0.0.0 is intentionally not supported yet for safety: it would expose remote code execution to the network; use 127.0.0.1 instead')
-      expect(wildcardHost.stderr).not.toContain('dsh web: http://')
+      let wildcardOut = ''
+      let wildcardSettled = false
+      const wildcardTimer = setTimeout(() => {
+        wildcardChild.kill('SIGKILL')
+      }, 25_000)
+      await new Promise<void>((resolve, reject) => {
+        wildcardChild.stdout.setEncoding('utf8')
+        wildcardChild.stdout.on('data', (chunk: string) => {
+          wildcardOut += chunk
+          if (!wildcardSettled && /dsh web: http:\/\/127\.0\.0\.1:\d+/u.test(wildcardOut)) {
+            wildcardSettled = true
+            wildcardChild.kill('SIGTERM')
+            resolve()
+          }
+        })
+        wildcardChild.on('error', reject)
+        wildcardChild.on('close', () => { if (wildcardSettled) resolve(); else reject(new Error('wildcard host did not settle')) })
+      })
+      clearTimeout(wildcardTimer)
+      expect(wildcardSettled).toBe(true)
+      expect(wildcardOut).toMatch(/dsh web: http:\/\/127\.0\.0\.1:\d+/u)
 
       const headlessHelp = await runBuiltBin(['--profile', 'headless', '--help'], {
         DSH_HOME: home,
