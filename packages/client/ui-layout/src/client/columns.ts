@@ -31,6 +31,10 @@ export const SIDEBAR_COLLAPSED = 56
  * LG breakpoint); a manual toggle below it re-expands over the squeezed center
  * (stores.ts narrowExpanded). */
 export const SIDEBAR_AUTO_COLLAPSE = 1024
+
+/** Viewport width below which the sidebar is completely hidden and accessible
+ * via a floating drawer; a hamburger/menu button exposes it on demand. */
+export const SIDEBAR_MOBILE_HIDE = 768
 /** Details drag clamp floor. */
 export const DETAILS_MIN = 300
 /** Details drag clamp ceiling. */

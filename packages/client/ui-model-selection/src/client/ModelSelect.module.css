@@ -70,7 +70,7 @@
   display: flex;
   flex-direction: column;
   width: min(240px, calc(100vw - 32px));
-  max-height: min(360px, calc(100vh - 96px));
+  max-height: min(360px, calc(100dvh - 96px));
   overflow: hidden;
   padding: 4px;
   /* Surface tokens match the Menu primitive card (ui-primitives

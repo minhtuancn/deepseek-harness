@@ -14,7 +14,7 @@ if (typeof globalThis.crypto.randomUUID !== 'function') {
   globalThis.crypto.randomUUID = function () {
     // Use crypto.getRandomValues if available, fallback to Math.random
     const getRandomValues = typeof globalThis.crypto.getRandomValues === 'function'
-      ? (arr: Uint8Array) => { globalThis.crypto.getRandomValues(arr as unknown as ArrayBufferView) }
+      ? (arr: Uint8Array) => { globalThis.crypto.getRandomValues(arr as unknown as ArrayBufferView<ArrayBuffer>) }
       : (arr: Uint8Array) => { for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256) }
     const arr = new Uint8Array(16)
     getRandomValues(arr)

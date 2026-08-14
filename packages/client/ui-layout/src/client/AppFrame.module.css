@@ -117,3 +117,32 @@
 .overlayLayer > * {
   pointer-events: auto;
 }
+
+.mobileSidebarOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--dsw-alias-bg-mask-1);
+  backdrop-filter: var(--dsw-mask-blur);
+}
+
+.mobileSidebarDrawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 280px;
+  background: var(--dsw-specific-sidebar-fill);
+  box-shadow: var(--dsw-shadow-lv3);
+  z-index: 101;
+  animation: slide-in 200ms var(--ds-ease-in-out);
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

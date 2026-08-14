@@ -215,6 +215,10 @@
   overflow-y: auto;
 }
 
+.mobileTitle {
+  display: none;
+}
+
 /* Visually-hidden text seat (close button accessible name from slot content). */
 .hiddenLabel {
   position: absolute;
@@ -223,4 +227,83 @@
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .panel {
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    max-width: 100vw;
+    border-radius: 0;
+  }
+
+  .content {
+    display: contents;
+  }
+
+  .header {
+    order: -2;
+    width: 100%;
+    height: 48px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--dsw-alias-border-l2);
+    background: var(--dsw-alias-bg-layer-2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mobileTitle {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--dsw-alias-label-primary);
+  }
+
+  .actions {
+    margin-left: auto;
+    margin-right: 8px;
+  }
+
+  .nav {
+    order: -1;
+    width: 100%;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--dsw-alias-border-l2);
+    background: var(--dsw-alias-bg-layer-2);
+    overflow-x: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    scrollbar-width: none; /* Hide horizontal scrollbar track */
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none; /* Hide horizontal scrollbar chrome */
+  }
+
+  .navTitle {
+    display: none;
+  }
+
+  .navList {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .navCell {
+    height: 32px;
+    padding: 4px 12px;
+    white-space: nowrap;
+    flex: none;
+    border-radius: 8px;
+  }
+
+  .options {
+    order: 0;
+    padding: 16px;
+    overflow-y: auto;
+  }
 }

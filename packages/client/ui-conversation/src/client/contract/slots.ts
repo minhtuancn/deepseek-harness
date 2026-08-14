@@ -422,6 +422,11 @@ export interface ConversationInjected {
    * the root renders as the inert composer's placeholder.
    */
   hooks: { composerBlock: ObservableSnapshot<ComposerBlock | undefined> }
+  /**
+   * Toggle the sidebar panel (closed ⟷ contract default width).
+   * Only available when the layout service is wired (root entry mounted).
+   */
+  toggleSidebar?: () => void
 }
 
 /** Business callbacks injected into the strict Session body seat. */

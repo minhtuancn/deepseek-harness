@@ -363,3 +363,50 @@
 .root[data-phase='settling'] .composerSeat {
   visibility: hidden;
 }
+
+.mobileHeader {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobileHeader {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--dsw-alias-border-l2);
+    background: var(--dsw-alias-bg-base);
+    gap: 12px;
+    z-index: 10;
+    flex: none;
+  }
+
+  .mobileMenuButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    color: var(--dsw-alias-label-primary);
+  }
+
+  .mobileMenuButton:hover {
+    background: var(--dsw-alias-interactive-bg-hover);
+  }
+
+  .mobileTitle {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--dsw-alias-label-primary);
+  }
+
+  .root {
+    --dsh-chat-content-width: calc(100% - 32px);
+    --dsh-composer-card-max-width: 100%;
+    --dsh-composer-side-clearance: 8px;
+  }
+}

@@ -51,7 +51,7 @@
   flex-direction: column;
   width: 336px;
   max-width: min(400px, calc(100vw - 32px));
-  max-height: min(560px, calc(100vh - 140px));
+  max-height: min(560px, calc(100dvh - 140px));
   padding: 4px;
   overflow: auto;
   border-radius: 12px;

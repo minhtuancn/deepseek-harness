@@ -64,7 +64,7 @@
  * this class — the overflow clip would crop the side card, so they rely on
  * staying short. */
 .scrollable {
-  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
 }
 
 .viewport {
