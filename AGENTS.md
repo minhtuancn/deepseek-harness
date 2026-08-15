@@ -147,3 +147,93 @@ Docs accompany every code change: update affected README and JSDoc contracts tog
 ## Vendoring policy
 
 `vendor/` packages are pinned source copies (manifest with upstream SHAs in [vendor/README.md](vendor/README.md)). Update via the sync procedure there; re-apply or retire the logged local modifications; rerun `pnpm run test && pnpm run build`.
+
+## Sync & Update from Upstream (DeepSeek Harness)
+
+**Run these steps inside the repo root when you want to pull latest code from DeepSeek AI:**
+
+```bash
+# 1. Clean working tree (stash any uncommitted local changes)
+git stash
+
+# 2. Fetch latest from upstream (deepseek-ai/deepseek-harness)
+git fetch upstream
+
+# 3. Merge upstream/master into your master
+git merge upstream/master
+
+# 4. Restore your local changes
+git stash pop
+
+# 5. Resolve conflicts IF ANY (see "Conflict Resolution" below)
+
+# 6. Install, Build, Test
+pnpm install
+pnpm run build
+pnpm run test
+
+# 7. Push to your fork
+git push origin master
+
+# 7. Restart production
+pm2 restart dsh-web
+```
+
+### Conflict Resolution (when `git merge upstream/master` reports conflicts)
+
+Conflicts typically appear in files you have modified (e.g., `packages/client/connection/src/index.ts`, `packages/client/ui-layout/src/client/AppFrame.tsx`).
+
+1. Open conflicted files (VS Code or `git status` shows them)
+2. Find conflict markers:
+   ```
+   <<<<<<< HEAD
+   // YOUR CUSTOM CODE (e.g., trustedHosts)
+   =======
+   // UPSTREAM CHANGES (from DeepSeek repo)
+   >>>>>>> upstream/master
+   ```
+
+3. **Keep YOUR changes** (the security/UX fixes you applied) for:
+   - `packages/client/connection/src/index.ts` → keep `trustedHosts` in `isTrustedApiRequest`
+   - `packages/client/ui-layout/src/client/AppFrame.tsx` → keep `isMobile` logic & mobile drawer
+   - `packages/client/ui-conversation/src/client/skeleton/ConversationRoot.tsx` → keep mobile header
+   - CSS files with mobile responsive changes (`100dvh`, mobile media queries)
+   - `apps/web/src/main.ts` → keep `ArrayBufferView<ArrayBuffer>` cast fix
+
+4. Remove conflict markers (`<<<<<<<`, `=======`, `>>>>>>`), save.
+5. `git add <resolved-file>`, `git commit -m "merge: resolve conflicts with upstream"`, `git push origin master`
+
+### Alternative: Patch-file approach (Zero-conflict sync)
+
+If you want **zero conflicts** forever, avoid editing core files directly. Instead:
+1. Create a personal patch file (e.g., `my-vpn-patch.yml`) with your overrides:
+   ```yaml
+   - id: webserver
+     config:
+       host: 0.0.0.0
+       port: 3080
+   - id: client-connection
+     config:
+       trustedHosts:
+         - 10.20.10.103
+   ```
+2. Run with patch flag:
+   ```bash
+   pnpm dsh web --patch ./my-vpn-patch.yml
+   ```
+3. Your core code stays 100% identical to upstream → `git pull` / `git merge` **never conflicts**.
+
+## Post-Update Checklist
+After every sync, run:
+```bash
+pnpm install
+pnpm run build
+pnpm run test
+pm2 restart dsh-web
+```
+
+---
+
+## Vendoring policy
+
+`vendor/` packages are pinned source copies (manifest with upstream SHAs in [vendor/README.md](vendor/README.md)). Update via the sync procedure there; re-apply or retire the logged local modifications; rerun `pnpm run test && pnpm run build`.
